@@ -8,6 +8,8 @@ import time
 import os
 
 if os.geteuid() != 0:
+    #In the beginning the Program has to check wether the user has root privileges
+    #because to write to the files of the keys the program needs root priveleges
     exit("To control the Keyboard you need root privileges.\nPlease try again, this time using 'sudo' ;) \nExiting.")
 
 global selected
@@ -15,6 +17,9 @@ selected = []
 randomSelected = []
 
 def changeRandomAllSelected(e=0):
+    """
+    This function adds the selcted keys to the list of randomly changing keys
+    """
     del e
     global randomSelected
     while True:
@@ -24,9 +29,15 @@ def changeRandomAllSelected(e=0):
 
 
 def rgb2hex(r,g,b):
+    """
+    This function converts a rgb value to its corresponding hex value
+    """
     return "#{:02x}{:02x}{:02x}".format(r,g,b)
 
 def readBrightness():
+    """
+    This function returns the current brightness of the keyboard
+    """
     with open(f"/sys/class/leds/rgb:kbd_backlight/brightness", "r") as f:
         return int(f.read())
 
@@ -188,6 +199,7 @@ btns = [
     ["strg", "fn", "#", "alt", "_", "", "", "", "", "", "alt gr", "strg", "", "", "⇑", "", "0", "", ",", ""],
     ["", "", "", "", "", "", "", "", "", "", "", "", "", "⇐", "⇓", "⇒", "", "", "", ""]
 ]
+#These are the corresponding numbers to the different keys on the keyboard
 nom = [
     [105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124],
     [ 84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  98,  98,  98,  99, 100, 101, 102],
@@ -198,6 +210,7 @@ nom = [
     [125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,  13,  18,  15, 125, 125, 125, 125]
     
 ]
+#These are the colours for the touch typing system of all the keys
 zehnFingerSystem = [
     [[[255,0,0]], [[255,0,0]], [[0,0,255]], [[0,255,0]], [[0,255,255]], [[0,255,255]], [[255,0,255]], [[255,0,255]], [[0,255,0]], [[0,0,255]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]]],
     [[[255,0,0]], [[255,0,0]], [[0,0,255]], [[0,255,0]], [[0,255,255]], [[0,255,255]], [[255,0,255]], [[255,0,255]], [[0,255,0]], [[0,0,255]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]]],
@@ -207,6 +220,8 @@ zehnFingerSystem = [
     [[[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]]],
     [[[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,0,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]], [[255,255,0]]]
 ]
+
+#Some of the buttons are differently shaped so in the UI they have to merge some grid cells
 for py, i in enumerate(btns):
     for px, j in enumerate(i):
         if j == "↵" and px < 15: btns[py][px] = btnplus(px, py, j, 3, 2)
@@ -226,24 +241,25 @@ brightness.grid(column=20, row=0, columnspan=5, sticky="nesw")
 var.set(readBrightness())
 
 
+#These are the buttons on the bottom of the UI
 change = Button(root,text="Change Colors", command=lambda : changeColors())
 change.grid(column=0, row=6, rowspan=3,sticky="nesw")
-#change.bind("<Button-4>", changeColors())
 selectAll_BTN = Button(root,text="Select all", command=lambda : selectAll())
 selectAll_BTN.grid(column=0, row=10, rowspan=3,sticky="nesw")
 deselectAll_BTN = Button(root,text="Deselect all", command=lambda : deselectAll())
 deselectAll_BTN.grid(column=0, row=14, rowspan=3,sticky="nesw")
-zehnFingerSystem_BTN = Button(root,text="Zehnfingersytem", command=lambda : colorZehnFingerSystem())
+zehnFingerSystem_BTN = Button(root,text="Touch typing", command=lambda : colorZehnFingerSystem())
 zehnFingerSystem_BTN.grid(column=0, row=18, rowspan=3,sticky="nesw")
-randomColors_BTN = Button(root,text="Random Farben", command=lambda : randomColors())
+randomColors_BTN = Button(root,text="Random colours", command=lambda : randomColors())
 randomColors_BTN.grid(column=0, row=22, rowspan=3,sticky="nesw")
-changeRandomColors_BTN = Button(root,text="Random Farben wechseln", command=lambda : changeRandomColors())
+changeRandomColors_BTN = Button(root,text="Changing random colours", command=lambda : changeRandomColors())
 changeRandomColors_BTN.grid(column=0, row=26, rowspan=3,sticky="nesw")
-deavtivateChangeRandomColors_BTN = Button(root,text="Random Faben wechseln ausschalten", command=lambda : deactivateChangeRandomColors())
+deavtivateChangeRandomColors_BTN = Button(root,text="Deactivate random changing colours", command=lambda : deactivateChangeRandomColors())
 deavtivateChangeRandomColors_BTN.grid(column=0, row=30, rowspan=3,sticky="nesw")
 
-
+#This is needed that the colourchanging is happening all of the time
 cycle = threading.Thread(target=changeRandomAllSelected, args=(1,),daemon=True)
 cycle.start()
 
+#At the End the loop for tkinter is started
 root.mainloop()
