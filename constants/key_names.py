@@ -1,3 +1,10 @@
+"""
+ISO standard key names for the keyboard layout.
+
+This list defines the key names in a 2D grid corresponding to the keyboard layout,
+using ISO standard identifiers for each key position.
+"""
+
 # ISO standard key names for the keyboard layout
 key_names: list[list[str]] = [
     [

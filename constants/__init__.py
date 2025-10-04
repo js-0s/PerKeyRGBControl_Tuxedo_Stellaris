@@ -1,3 +1,10 @@
+"""
+Constants for keyboard layout and localization.
+
+This module defines the keyboard key numbering scheme (nom), ISO key names (key_names),
+and localized key labels for different languages (localized_names).
+"""
+
 from __future__ import annotations
 
 from .key_names import key_names

@@ -54,6 +54,8 @@ $ sudo python3 pyrgb-cli.py save path/to/config.ini
 $ sudo python3 pyrgb-cli.py load path/to/config.ini
 $ sudo python3 pyrgb-cli.py animate --type random
 $ sudo python3 pyrgb-cli.py animate --type wave
+$ sudo python3 pyrgb-cli.py animate --type pulse --target keyboard
+$ sudo python3 pyrgb-cli.py animate --type pulse --target lightbar --color "#ff0000"
 ```
 
 GUI
@@ -74,12 +76,14 @@ The CLI provides a small set of commands via argparse:
   - `sudo python3 pyrgb-cli.py save mycolors.ini`
 - `load <filename>`: Loads an INI color file and applies it to the keyboard:
   - `sudo python3 pyrgb-cli.py load mycolors.ini`
-- `animate --type {random,wave}`: Starts an animation loop that modifies keys until interrupted:
+- `animate --type {random,wave,pulse}`: Starts an animation loop that modifies keys until interrupted:
   - `sudo python3 pyrgb-cli.py animate --type random`
   - `sudo python3 pyrgb-cli.py animate --type wave`
+  - `sudo python3 pyrgb-cli.py animate --type pulse --target {keyboard,lightbar,key} [--key-name NAME] [--color HEX]`
   - Press Ctrl+C to stop the animation. The animations are implemented in `animations.py`:
     - `random` picks random keys and assigns random colors periodically.
     - `wave` cycles a hue across keyboard columns.
+    - `pulse` pulses the brightness of the target (keyboard backlight, lightbar, or specific key) up and down, optionally setting a color first.
 
 GUI: features and controls
 --------------------------
@@ -93,6 +97,8 @@ The UI (in `pyrgb-tk.py`) exposes an interactive representation of the keyboard 
 - Brightness slider — reads and writes the brightness value (via `/sys/class/leds/rgb:kbd_backlight/brightness`).
 - "Changing random colours" toggle — start/stop the background random-key animation.
 - "Wave Animation" toggle — start/stop the wave animation.
+- "Pulse Keyboard" toggle — start/stop the pulse animation for the keyboard backlight.
+- "Pulse Lightbar" toggle — start/stop the pulse animation for the lightbar.
 - "Save config" / "Load config" — save the current layout/colors to an INI file, or load one and apply it.
 - Language selector — switch UI labels using localized names (if available in `constants/localized_names.py`).
 
@@ -111,7 +117,7 @@ Files of interest
 - `pyrgb-cli.py` — CLI entrypoint.
 - `pyrgb_core.py` — low-level sysfs reads/writes and root check.
 - `pyrgb_keyboard.py` — keyboard abstraction (mapping keys to the `Key` objects).
-- `animations.py` — random and wave animations.
+- `animations.py` — random, wave, and pulse animations.
 - `requirements.txt` — Python dependencies for the UI (and CLI helpers).
 - `constants/` — key naming mapping and localized labels.
 

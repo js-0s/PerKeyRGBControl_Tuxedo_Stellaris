@@ -1,3 +1,10 @@
+"""
+Localized names for different languages.
+
+This dictionary maps language codes (e.g., 'de', 'en-us', 'dvp') to dictionaries
+that translate ISO key names to localized labels for display in the GUI.
+"""
+
 # Localized names for different languages
 localized_names: dict[str, dict[str, str]] = {
     "de": {
