@@ -560,6 +560,7 @@ class UiButton:
         lang: str,
         h: int = 1,
         w: int = 1,
+        key: LEDDevice | None = None,
     ) -> None:
         self.manager: UiManager = manager
         self.frm: Frame = frm
